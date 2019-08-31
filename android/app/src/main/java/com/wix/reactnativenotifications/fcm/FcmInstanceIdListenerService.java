@@ -2,11 +2,15 @@ package com.wix.reactnativenotifications.fcm;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.content.Intent;
+
+import java.util.Map;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.wix.reactnativenotifications.core.notification.IPushNotification;
 import com.wix.reactnativenotifications.core.notification.PushNotification;
+import com.wix.reactnativenotifications.core.notification.HeadlessTaskDispatcher;
 
 import static com.wix.reactnativenotifications.Defs.LOGTAG;
 
@@ -22,12 +26,22 @@ public class FcmInstanceIdListenerService extends FirebaseMessagingService {
         Bundle bundle = message.toIntent().getExtras();
         Log.d(LOGTAG, "New message from FCM: " + bundle);
 
-        try {
-            final IPushNotification notification = PushNotification.get(getApplicationContext(), bundle);
-            notification.onReceived();
-        } catch (IPushNotification.InvalidNotificationException e) {
-            // An FCM message, yes - but not the kind we know how to work with.
-            Log.v(LOGTAG, "FCM message handling aborted", e);
+        if(message.getNotification() == null && !message.getData().isEmpty()) {
+            //This is a data only message, dispatch it to a headless task
+            Log.d(LOGTAG, "Message is data only: " + bundle);
+
+            Intent service = new Intent(getApplicationContext(), HeadlessTaskDispatcher.class);
+            service.putExtras(bundle);
+            getApplicationContext().startService(service);
+        }
+        else {
+            try {
+                final IPushNotification notification = PushNotification.get(getApplicationContext(), bundle);
+                notification.onReceived();
+            } catch (IPushNotification.InvalidNotificationException e) {
+                // An FCM message, yes - but not the kind we know how to work with.
+                Log.v(LOGTAG, "FCM message handling aborted", e);
+            }
         }
     }
 }
