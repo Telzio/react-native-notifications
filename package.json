@@ -1,6 +1,6 @@
 {
   "name": "react-native-notifications",
-  "version": "2.0.6",
+  "version": "2.1.3",
   "description": "Advanced Push Notifications (Silent, interactive notifications) for iOS & Android",
   "author": "Lidan Hifi <lidan.hifi@gmail.com>",
   "license": "MIT",
@@ -31,7 +31,8 @@
     "test-unit-ios": "node ./scripts/test-unit --ios",
     "test-unit-android": "node ./scripts/test-unit --android",
     "test-js": "node ./scripts/test-js",
-    "release": "node ./scripts/release"
+    "release": "node ./scripts/release",
+    "generate-changelog": "gren changelog"
   },
   "nativePackage": true,
   "dependencies": {
@@ -58,12 +59,13 @@
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",
     "shell-utils": "1.x.x",
-    "react-native": "0.59.5",
+    "react-native": "0.60.5",
     "react": "16.8.6",
     "detox": "13.x.x",
     "jsc-android": "236355.x.x",
     "jest": "24.8.0",
-    "metro-react-native-babel-preset": "0.55.x"
+    "metro-react-native-babel-preset": "0.55.x",
+    "github-release-notes": "0.17.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
