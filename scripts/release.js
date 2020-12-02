@@ -9,7 +9,7 @@ const grenrc = require('../.grenrc');
 const isRelease = process.env.RELEASE_BUILD === 'true';
 
 const BRANCH = process.env.BRANCH;
-const VERSION_TAG = isRelease ? 'latest' : 'snapshot';
+const VERSION_TAG = process.env.NPM_TAG || isRelease ? 'latest' : 'snapshot';
 const VERSION_INC = 'patch';
 
 function run() {
@@ -121,6 +121,7 @@ function updateGit(version) {
     generateChangelog();
     exec.execSync(`git commit -m "Update package.json version to ${version} and generate CHANGELOG.gren.md [ci skip]"`);
     exec.execSync(`git push deploy ${BRANCH}`);
+    draftGitRelease(version);
 }
 
 function updatePackageJson(version) {
@@ -133,6 +134,10 @@ function updatePackageJson(version) {
 function generateChangelog() {
     exec.execSync('npm run generate-changelog');
     exec.execSync(`git add ${grenrc.changelogFilename}`);
+}
+
+function draftGitRelease(version) {
+    exec.execSync(`npx gren release --tags=${version}`);
 }
 
 run();
